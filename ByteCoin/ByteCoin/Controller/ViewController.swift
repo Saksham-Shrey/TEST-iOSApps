@@ -7,10 +7,14 @@
 //
 
 import UIKit
+import Alamofire
+import SwiftyJSON
 
 class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     
     let coinManager = CoinManager()
+    
+    let session = Session()
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -36,8 +40,32 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        print(coinManager.getCoinPrice(for: coinManager.currencyArray[row]))
+        loadApiData(with: "\(coinManager.baseURL)/\(coinManager.currencyArray[row])?apikey=\(coinManager.apiKey)")
     }
+    
+    func dataReceived(coinData: CoinData) {
+        DispatchQueue.main.async { [self] in
+            bitcoinLabel.text = String(format: "%.4f", coinData.rate)
+            currencyLabel.text = coinData.asset_id_quote
+        }
+    }
+
+    func loadApiData(with url: String){
+
+            AF.request(url).responseDecodable(of: CoinData.self) { [self] response in
+
+                switch response.result {
+                    
+                case .success(let CoinData):
+                    dataReceived(coinData: CoinData)
+
+                case .failure(let CoinDataFetchError):
+                    print(CoinDataFetchError.localizedDescription)
+                }
+            }
+        }
+
+
 }
 
 
