@@ -7,16 +7,33 @@
 //
 
 import Foundation
+import Alamofire
+
+protocol CoinManagerDelegate {
+    func dataReceived(coinData: CoinData)
+}
 
 struct CoinManager {
     
     let baseURL = "https://rest.coinapi.io/v1/exchangerate/BTC"
     let apiKey = ProcessInfo.processInfo.environment["API_KEY"]!
     
-    let currencyArray = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
-
-    func getCoinPrice(for currency: String) {
-        print(currency)
-    }
+    var delegate: CoinManagerDelegate?
     
+    let currencyArray = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
+    
+    func fetchCoinData(with url: String){
+
+            AF.request(url).responseDecodable(of: CoinData.self) { [self] response in
+
+                switch response.result {
+                    
+                case .success(let CoinData):
+                    self.delegate?.dataReceived(coinData: CoinData)
+
+                case .failure(let CoinDataFetchError):
+                    print(CoinDataFetchError.localizedDescription)
+                }
+            }
+        }
 }

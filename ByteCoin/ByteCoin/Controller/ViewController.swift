@@ -8,11 +8,10 @@
 
 import UIKit
 import Alamofire
-import SwiftyJSON
 
-class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, CoinManagerDelegate {
     
-    let coinManager = CoinManager()
+    var coinManager = CoinManager()
     
     let session = Session()
     
@@ -33,6 +32,8 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         super.viewDidLoad()
         currencyPicker.dataSource = self
         currencyPicker.delegate = self
+        
+        coinManager.delegate = self
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
@@ -40,7 +41,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        loadApiData(with: "\(coinManager.baseURL)/\(coinManager.currencyArray[row])?apikey=\(coinManager.apiKey)")
+        coinManager.fetchCoinData(with: "\(coinManager.baseURL)/\(coinManager.currencyArray[row])?apikey=\(coinManager.apiKey)")
     }
     
     func dataReceived(coinData: CoinData) {
@@ -50,20 +51,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         }
     }
 
-    func loadApiData(with url: String){
-
-            AF.request(url).responseDecodable(of: CoinData.self) { [self] response in
-
-                switch response.result {
-                    
-                case .success(let CoinData):
-                    dataReceived(coinData: CoinData)
-
-                case .failure(let CoinDataFetchError):
-                    print(CoinDataFetchError.localizedDescription)
-                }
-            }
-        }
+    
 
 
 }

@@ -7,6 +7,5 @@ target 'ByteCoin' do
 
   # Pods for ByteCoin
 	pod 'Alamofire'
-	pod 'SwiftyJSON'
 
 end
