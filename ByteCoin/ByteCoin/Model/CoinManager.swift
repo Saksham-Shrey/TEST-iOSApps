@@ -21,7 +21,8 @@ struct CoinManager {
     var delegate: CoinManagerDelegate?
     
     let currencyArray = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
-    
+  
+    // This function will be called by the ViewController class with proper arguments which will contain the 'API_REQUEST_STRING'
     func fetchCoinData(with url: String){
         
         AF.request(url).responseDecodable(of: CoinData.self) { response in
