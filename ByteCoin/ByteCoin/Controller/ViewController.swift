@@ -7,13 +7,11 @@
 //
 
 import UIKit
-import Alamofire
+
 
 class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, CoinManagerDelegate {
     
     var coinManager = CoinManager()
-    
-    let session = Session()
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1

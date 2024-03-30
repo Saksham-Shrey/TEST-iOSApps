@@ -23,17 +23,24 @@ struct CoinManager {
     let currencyArray = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
     
     func fetchCoinData(with url: String){
-
-            AF.request(url).responseDecodable(of: CoinData.self) { [self] response in
-
-                switch response.result {
-                    
-                case .success(let CoinData):
-                    self.delegate?.dataReceived(coinData: CoinData)
-
-                case .failure(let CoinDataFetchError):
-                    print(CoinDataFetchError.localizedDescription)
-                }
+        
+        AF.request(url).responseDecodable(of: CoinData.self) { response in
+            // A request is made to the url and a response is expected which shall be decoded in the format of CoinData
+            
+            // The returned Response is stored locally as "response" and is then used to check for success or failure of the request using the .result
+            
+            switch response.result {
+                
+                
+                // If the request is successful, then the returned data from the response is stored locally as CoinData which can be used further as per the requirements
+            case .success(let CoinData):
+                self.delegate?.dataReceived(coinData: CoinData)
+                // Here, the CoinData is passed to another function named dataReceived in the delegated class (here, it's the ViewController)
+                
+                // If the request is not successful, then the returned Error is stored with the local name CoinDataFetchError which can be handled appropriately
+            case .failure(let CoinDataFetchError):
+                print(CoinDataFetchError.localizedDescription)
             }
         }
+    }
 }
